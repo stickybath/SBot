@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <netdb.h>
 #include "sbot.h"
 
 int main(int argc, char *argv[])
@@ -10,9 +11,10 @@ int main(int argc, char *argv[])
 	char *channel = NULL;
 	char *host = NULL;
 	char *port = NULL;
-	
 	int ch;
-	
+	int connection;
+	struct addrinfo hints, *res;	
+
 	while((ch = getopt(argc, argv, "n:c:h:p:")) !=  EOF) {
 		switch(ch) {
 		case 'n':
@@ -55,8 +57,24 @@ int main(int argc, char *argv[])
 		strcat(port, "6667");
 	}		
 	printf("Connecting to %s:%s as %s.\n", host, port, nick);
-	//connect function
-	printf("Joining #%s.\n", channel);	
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_STREAM;
+	getaddrinfo(host, port, &hints, &res);
+	
+
+	connection = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+	
+	if(connection == -1) {
+		//handle socket error
+		return 1;
+	}
+	connect(connection, res->ai_addr, res->ai_addrlen);
+	
+
+	printf("Assigning nick: %s\n", nick);
+	command(connection, "USER %s 0 0 :%s\r\n", nick, nick);
+	command(connection, "NICK %s\r\n", nick);
 
 	return 0;
 }
