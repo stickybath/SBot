@@ -47,6 +47,7 @@ int parse(const int connection, const void* data)
 		}
 	}
 	if(!strncmp(line, "PING", 4)) {
+		printf("DADADADADADADADAD");
 		printf(">>%s", line);
 		line[1] = 'O';
 		command(connection, "%s", line);

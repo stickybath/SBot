@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 	char *port = NULL;
 	int ch;
 	int connection;
-	struct addrinfo hints, *res;	
+	struct addrinfo hints, *res;
 
 	while((ch = getopt(argc, argv, "n:c:h:p:")) !=  EOF) {
 		switch(ch) {
@@ -56,13 +56,13 @@ int main(int argc, char *argv[])
 			return 1;
 		}
 		strcat(port, "6667");
-	}		
+	}
 	printf("Connecting to %s:%s as %s.\n", host, port, nick);
 	memset(&hints, 0, sizeof(hints));
 	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_STREAM;
 	getaddrinfo(host, port, &hints, &res);
-	connection = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+  	connection = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 	if(connection == -1) {
 		//handle socket error
 		return 1;
@@ -79,7 +79,8 @@ int main(int argc, char *argv[])
 	{
 		switch(parse(connection, buffer)) {
 			case 1:
-				command(connection, "JOIN #%s\r\n", channel);
+				printf("\nPONGed");
+				//command(connection, "JOIN #%s\r\n", channel);
 			default:
 				break;
 		}
